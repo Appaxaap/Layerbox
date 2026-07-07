@@ -315,7 +315,7 @@ export function ShadowScale({ isLight }: { isLight: boolean }) {
           }}
         >
           <div
-            className="flex items-center overflow-x-auto"
+            className="flex items-center overflow-x-auto flex-1 min-w-0"
             style={{ scrollbarWidth: "none" }}
           >
             {EXPORTS.map((e) => (

@@ -72,7 +72,7 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
         }}
       >
         <div
-          className="flex items-center overflow-x-auto rounded-xl"
+          className="flex items-center overflow-x-auto rounded-xl flex-1 min-w-0"
           style={{ scrollbarWidth: "none" }}
         >
           {TABS.map((t) => (
