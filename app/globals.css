@@ -184,32 +184,3 @@ body {
 html.light ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.12);
 }
-
-/* Code syntax highlighting */
-.code-k {
-    color: var(--code-k);
-}
-.code-s {
-    color: var(--code-s);
-}
-.code-n {
-    color: var(--code-n);
-}
-.code-p {
-    color: var(--code-p);
-}
-.code-f {
-    color: var(--code-f);
-}
-.code-c {
-    color: var(--code-c);
-}
-.code-o {
-    color: var(--code-o);
-}
-.code-d {
-    color: var(--code-d);
-}
-.code-t {
-    color: var(--code-t);
-}
