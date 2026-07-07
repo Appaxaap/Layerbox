@@ -72,9 +72,9 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
         className="flex items-center justify-between shrink-0"
         style={{ height: 54, padding: "0 20px" }}
       >
-        {/* Left: language tabs */}
+        {/* Left: language tabs — flex-1 constrains width, overflow-x-auto scrolls when needed */}
         <div
-          className="flex items-center gap-2 overflow-x-auto min-w-0"
+          className="flex items-center gap-2 overflow-x-auto flex-1 min-w-0"
           style={{ scrollbarWidth: "none" }}
         >
           {TABS.map((t) => (
