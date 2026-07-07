@@ -59,27 +59,29 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
     <div
       className="overflow-hidden h-full flex flex-col"
       style={{
+        borderRadius: panelMode ? 0 : 12,
         borderTop: panelMode ? "none" : "1px solid var(--border)",
         borderLeft: panelMode ? "1px solid var(--border)" : "none",
-        background:
-          "linear-gradient(180deg, color-mix(in srgb, var(--surface-raised) 70%, transparent), color-mix(in srgb, var(--surface) 92%, transparent))",
+        borderRight: "1px solid var(--border)",
+        borderBottom: "1px solid var(--border)",
+        background: "var(--surface)",
       }}
     >
+      {/* Toolbar — dedicated 54px strip */}
       <div
-        className="flex items-center justify-between gap-3 px-3 sm:px-4 py-2"
-        style={{
-          borderBottom: "1px solid var(--border)",
-        }}
+        className="flex items-center justify-between shrink-0"
+        style={{ height: 54, padding: "0 20px" }}
       >
+        {/* Left: language tabs */}
         <div
-          className="flex items-center overflow-x-auto rounded-xl flex-1 min-w-0"
+          className="flex items-center gap-2 overflow-x-auto min-w-0"
           style={{ scrollbarWidth: "none" }}
         >
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className="shrink-0 px-3 py-1.5 text-xs font-semibold transition-all rounded-md whitespace-nowrap"
+              className="shrink-0 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-all duration-150"
               style={{
                 color: tab === t.id ? "var(--text)" : "var(--text-muted)",
                 background:
@@ -96,10 +98,12 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
+
+        {/* Right: utility actions */}
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 active:scale-95"
             style={{
               background: codeCopied
                 ? "color-mix(in srgb, var(--accent) 15%, transparent)"
@@ -117,7 +121,7 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
           </button>
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 active:scale-95"
             style={{
               background: shareCopied
                 ? "color-mix(in srgb, var(--accent) 15%, transparent)"
@@ -136,24 +140,25 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
         </div>
       </div>
 
-      <div className="px-3 sm:px-4 py-3 flex-1 min-h-0">
-        <div
-          className="rounded-xl overflow-hidden h-full flex flex-col"
+      {/* Subtle divider */}
+      <div style={{ height: 1, background: "var(--border)", flexShrink: 0 }} />
+
+      {/* Code viewport — scrolls independently */}
+      <div
+        className="flex-1 min-h-0 overflow-y-auto"
+        style={{ background: "var(--surface-code)" }}
+      >
+        <pre
+          className="text-[13px] font-mono leading-relaxed whitespace-pre"
           style={{
-            border: "1px solid var(--border)",
-            background: "var(--surface-code)",
+            margin: 0,
+            padding: "28px 24px 24px",
+            color: "var(--text)",
+            minHeight: "100%",
+            boxSizing: "border-box",
           }}
-        >
-          <pre
-            className="px-4 py-3 text-[13px] font-mono leading-relaxed overflow-auto whitespace-pre flex-1"
-            style={{
-              color: "var(--text)",
-              maxHeight: panelMode ? "none" : 176,
-              minHeight: panelMode ? 0 : 120,
-            }}
-            dangerouslySetInnerHTML={{ __html: highlighted }}
-          />
-        </div>
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
       </div>
     </div>
   );
