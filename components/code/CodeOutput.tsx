@@ -4,6 +4,7 @@ import { Check, Copy, Link } from "lucide-react";
 import { useState } from "react";
 import type { Shadow } from "../../lib/types";
 import { type ExportFormat, getFormatCode } from "../../lib/exportFormats";
+import { highlightCode } from "../../lib/syntaxHighlight";
 
 type Props = {
   shadows: Shadow[];
@@ -40,6 +41,7 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
   const [shareCopied, setShareCopied] = useState(false);
 
   const code = getFormatCode(tab, shadows);
+  const highlighted = highlightCode(code);
 
   async function handleCopy() {
     await copyText(code);
@@ -82,11 +84,11 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
                 color: tab === t.id ? "var(--text)" : "var(--text-muted)",
                 background:
                   tab === t.id
-                    ? "color-mix(in srgb, var(--accent) 18%, transparent)"
+                    ? "color-mix(in srgb, var(--surface-raised) 60%, transparent)"
                     : "transparent",
                 border:
                   tab === t.id
-                    ? "1px solid color-mix(in srgb, var(--accent) 45%, transparent)"
+                    ? "1px solid var(--border-hover)"
                     : "1px solid transparent",
               }}
             >
@@ -145,13 +147,12 @@ export function CodeOutput({ shadows, getShareUrl, panelMode = false }: Props) {
           <pre
             className="px-4 py-3 text-[13px] font-mono leading-relaxed overflow-auto whitespace-pre flex-1"
             style={{
-              color: "var(--accent)",
+              color: "var(--text)",
               maxHeight: panelMode ? "none" : 176,
               minHeight: panelMode ? 0 : 120,
             }}
-          >
-            {code}
-          </pre>
+            dangerouslySetInnerHTML={{ __html: highlighted }}
+          />
         </div>
       </div>
     </div>

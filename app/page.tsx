@@ -48,7 +48,6 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden sg-page">
-      {/* ── Header ── */}
       <header
         className="shrink-0 h-13 flex items-center px-4 sm:px-5 animate-fade-in"
         style={{
@@ -123,9 +122,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Content ── */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        {/* ── EDITOR TAB ── */}
         {tab === "editor" && (
           <div className="h-full min-h-0 flex flex-col lg:flex-row">
             {/* Left sidebar */}
@@ -211,7 +208,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── SCALE TAB ── */}
         {tab === "scale" && (
           <div className="h-full overflow-y-auto p-4 animate-fade-up">
             <div className="max-w-5xl mx-auto">
@@ -220,7 +216,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── PRESETS TAB ── */}
         {tab === "presets" && (
           <div className="h-full overflow-y-auto p-4 animate-fade-up">
             <div className="max-w-5xl mx-auto">

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Check, Copy } from "lucide-react";
 import { hexToRgba } from "../../lib/shadowUtils";
+import { highlightCode } from "../../lib/syntaxHighlight";
 
 type ScaleStyle = "soft" | "sharp" | "spread" | "colored";
 type ScaleEntry = { name: string; value: string };
@@ -101,8 +102,11 @@ export function ShadowScale({ isLight }: { isLight: boolean }) {
     }
   }
 
+  const exportCode = getExportCode();
+  const highlighted = highlightCode(exportCode);
+
   async function handleCopy() {
-    await copyText(getExportCode());
+    await copyText(exportCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -321,14 +325,14 @@ export function ShadowScale({ isLight }: { isLight: boolean }) {
                 className="shrink-0 px-3.5 py-2.5 text-xs font-semibold transition-all relative"
                 style={{
                   color:
-                    exportType === e.id ? "var(--accent)" : "var(--text-muted)",
+                    exportType === e.id ? "var(--text)" : "var(--text-muted)",
                 }}
               >
                 {e.label}
                 {exportType === e.id && (
                   <span
                     className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                    style={{ background: "var(--accent)" }}
+                    style={{ background: "var(--text-faint)" }}
                   />
                 )}
               </button>
@@ -359,13 +363,12 @@ export function ShadowScale({ isLight }: { isLight: boolean }) {
           <pre
             className="p-4 text-xs font-mono leading-relaxed overflow-x-auto whitespace-pre-wrap"
             style={{
-              color: "var(--accent)",
+              color: "var(--text)",
               maxHeight: 200,
               overflowY: "auto",
             }}
-          >
-            {getExportCode()}
-          </pre>
+            dangerouslySetInnerHTML={{ __html: highlighted }}
+          />
         </div>
       </div>
     </div>
