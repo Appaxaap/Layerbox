@@ -7,6 +7,8 @@ import {
   Sun,
   PanelLeftClose,
   PanelLeft,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { CodeOutput } from "../components/code/CodeOutput";
@@ -38,6 +40,10 @@ export default function Home() {
     setLightPosition,
     computeShadow,
     loadPreset,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useShadowState();
 
   const [materialId, setMaterialId] = useState<MaterialId>(DEFAULT_MATERIAL);
@@ -46,6 +52,27 @@ export default function Home() {
   const [isLight, setIsLight] = useState(false);
   const [tab, setTab] = useState<"editor" | "presets" | "scale">("editor");
   const [showPanels, setShowPanels] = useState(true);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const isCtrl = e.ctrlKey || e.metaKey;
+      if (isCtrl && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      }
+      if (isCtrl && e.key === "z" && e.shiftKey) {
+        e.preventDefault();
+        redo();
+      }
+      if (isCtrl && e.key === "y") {
+        e.preventDefault();
+        redo();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [undo, redo]);
 
   useEffect(() => {
     setIsLight(document.documentElement.classList.contains("light"));
@@ -126,6 +153,40 @@ export default function Home() {
                 {t}
               </button>
             ))}
+          </div>
+
+          {/* Undo / Redo */}
+          <div className="flex items-center gap-0.5">
+            <button
+              onClick={undo}
+              className="w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-150 active:scale-90"
+              style={{
+                background: "rgba(128,128,128,0.08)",
+                border: "1px solid var(--border)",
+                color: canUndo ? "var(--text-muted)" : "var(--text-faint)",
+                opacity: canUndo ? 1 : 0.4,
+                cursor: canUndo ? "pointer" : "default",
+              }}
+              aria-label="Undo"
+              title="Undo (Ctrl+Z)"
+            >
+              <Undo2 size={13} />
+            </button>
+            <button
+              onClick={redo}
+              className="w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-150 active:scale-90"
+              style={{
+                background: "rgba(128,128,128,0.08)",
+                border: "1px solid var(--border)",
+                color: canRedo ? "var(--text-muted)" : "var(--text-faint)",
+                opacity: canRedo ? 1 : 0.4,
+                cursor: canRedo ? "pointer" : "default",
+              }}
+              aria-label="Redo"
+              title="Redo (Ctrl+Shift+Z)"
+            >
+              <Redo2 size={13} />
+            </button>
           </div>
 
           {/* Light source toggle */}

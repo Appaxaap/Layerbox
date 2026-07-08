@@ -31,6 +31,13 @@ export function useShadowState() {
   const history = useRef<Shadow[][]>([DEFAULT_SHADOWS]);
   const historyIdx = useRef(0);
   const skipHistory = useRef(false); // set true during undo/redo to avoid double-push
+  const [canUndo, setCanUndo] = useState(false);
+  const [canRedo, setCanRedo] = useState(false);
+
+  const syncHistoryFlags = useCallback(() => {
+    setCanUndo(historyIdx.current > 0);
+    setCanRedo(historyIdx.current < history.current.length - 1);
+  }, []);
 
   // Wrap setShadows so every state change is pushed to history
   const setShadows = useCallback(
@@ -46,8 +53,10 @@ export function useShadowState() {
         }
         return next;
       });
+      // Sync flags after state commit
+      setTimeout(syncHistoryFlags, 0);
     },
-    [],
+    [syncHistoryFlags],
   );
 
   const undo = useCallback(() => {
@@ -56,7 +65,8 @@ export function useShadowState() {
     skipHistory.current = true;
     setShadowsRaw(history.current[historyIdx.current]);
     skipHistory.current = false;
-  }, []);
+    setTimeout(syncHistoryFlags, 0);
+  }, [syncHistoryFlags]);
 
   const redo = useCallback(() => {
     if (historyIdx.current >= history.current.length - 1) return;
@@ -64,7 +74,8 @@ export function useShadowState() {
     skipHistory.current = true;
     setShadowsRaw(history.current[historyIdx.current]);
     skipHistory.current = false;
-  }, []);
+    setTimeout(syncHistoryFlags, 0);
+  }, [syncHistoryFlags]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -232,5 +243,7 @@ export function useShadowState() {
     getShareUrl,
     undo,
     redo,
+    canUndo,
+    canRedo,
   };
 }
