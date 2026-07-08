@@ -277,17 +277,17 @@ export default function Home() {
                 )}
                 <div className="flex-1" />
               </div>
+            </div>
 
-              {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
-              <div
-                className="absolute bottom-3 left-[285px] right-[285px] h-[320px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
-                style={{
-                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                  borderTop: "1px solid var(--border)",
-                }}
-              >
-                <CodeOutput shadows={displayShadows} />
-              </div>
+            {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
+            <div
+              className="absolute bottom-3 left-[285px] right-[285px] h-[320px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
+              style={{
+                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                borderTop: "1px solid var(--border)",
+              }}
+            >
+              <CodeOutput shadows={displayShadows} />
             </div>
           </div>
         )}
