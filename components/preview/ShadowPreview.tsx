@@ -511,8 +511,6 @@ export function ShadowPreview({
                   style={{
                     width: elementSize,
                     height: elementSize,
-                  }}
-                  style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
                     transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
@@ -537,8 +535,6 @@ export function ShadowPreview({
                   style={{
                     width: elementSize,
                     height: elementSize,
-                  }}
-                  style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
                     transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
@@ -565,8 +561,6 @@ export function ShadowPreview({
                     paddingRight: Math.round(elementSize * 0.25),
                     paddingTop: Math.round(elementSize * 0.1),
                     paddingBottom: Math.round(elementSize * 0.1),
-                  }}
-                  style={{
                     background: material.elementBg,
                     color: textColor,
                     boxShadow: shadowValue,
@@ -593,8 +587,6 @@ export function ShadowPreview({
                   className="rounded-2xl p-5 flex flex-col gap-3"
                   style={{
                     width: Math.max(elementSize * 1.5, 200),
-                  }}
-                  style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
                     transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
