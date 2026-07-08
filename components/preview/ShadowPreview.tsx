@@ -5,7 +5,7 @@ import type { PreviewShape, Shadow } from "../../lib/types";
 import { shadowsToCssValue } from "../../lib/shadowUtils";
 import type { LightState } from "../../lib/lightSource";
 import { LightSourceOverlay } from "./LightSourceOverlay";
-import type { Material, MaterialId } from "../../lib/materials";
+import type { MaterialId } from "../../lib/materials";
 import {
   MATERIALS,
   getMaterial,
@@ -217,13 +217,6 @@ export function ShadowPreview({
         : interactionState === "focus"
           ? "scale(1.02)"
           : "scale(1)";
-
-  const interactionShadow =
-    interactionState === "hover" || interactionState === "focus"
-      ? shadowValue
-      : interactionState === "active"
-        ? shadowValue
-        : shadowValue;
 
   // CSS snippet for interaction states
   const stateCss =

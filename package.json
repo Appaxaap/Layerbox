@@ -1,7 +1,27 @@
 {
-  "name": "shadow-generator",
-  "version": "0.1.0",
-  "private": true,
+  "name": "layerbox",
+  "version": "0.2.0",
+  "private": false,
+  "description": "Professional CSS box-shadow generator — multi-layer control, real-time preview, and cross-format code export",
+  "keywords": [
+    "box-shadow",
+    "css",
+    "shadow-generator",
+    "tailwind",
+    "design-tools",
+    "nextjs",
+    "react"
+  ],
+  "homepage": "https://layerbox.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Appaxaap/shadow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Appaxaap/shadow/issues"
+  },
+  "license": "MIT",
+  "author": "Appaxaap",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,14 +30,11 @@
   },
   "dependencies": {
     "@radix-ui/react-slider": "^1.3.6",
-    "clsx": "^2.1.1",
-    "copy-to-clipboard": "^4.0.2",
     "lucide-react": "^1.14.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-colorful": "^5.7.0",
-    "react-dom": "19.2.4",
-    "tailwind-merge": "^3.6.0"
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
