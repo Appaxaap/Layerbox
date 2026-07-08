@@ -470,7 +470,7 @@ export function ShadowPreview({
 
       {/* Draggable canvas surface */}
       <div
-        className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing select-none touch-none"
+        className="absolute inset-0 z-0 cursor-grab active:cursor-grabbing select-none touch-none"
         style={{ touchAction: "none" }}
         onPointerDown={handlePanStart}
         onPointerMove={handlePanMove}

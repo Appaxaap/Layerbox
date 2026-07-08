@@ -344,32 +344,30 @@ Categories: Subtle, Elevated, Material, Apple, Soft UI, Glassmorphism, Neumorphi
 
 ```
 Routes:
-  /  -> LandingPage (app/page.tsx)          - Marketing page with SEO content
-  /editor -> EditorPage (app/editor/page.tsx) - Shadow generator tool
+  /       -> EditorPage (app/page.tsx)   - Shadow generator tool (main route)
+  /blog   -> BlogPage (app/blog/page.tsx) - Blog listing for SEO/AEO content
+  /blog/[slug] -> BlogPostPage            - Individual blog post
 
 RootLayout (layout.tsx)
   +-- themeScript (inline script prevents flash)
   +-- JSON-LD structured data (SoftwareApplication schema)
-  +-- LandingPage (page.tsx) [at /]
-  |   +-- Hero section with CTA
-  |   +-- Features grid (6 feature cards)
-  |   +-- How it works section (3 steps)
-  |   +-- Export formats showcase
-  |   +-- FAQ section (6 accordion items)
-  |   +-- Footer
+  +-- BlogPage (app/blog/page.tsx) [at /blog]
   |
-  +-- EditorPage (editor/page.tsx) [at /editor]
+  +-- BlogPostPage (app/blog/[slug]/page.tsx) [at /blog/[slug]]
+  |
+  +-- EditorPage (app/page.tsx) [at /]
        +-- useShadowState (hook)
        |
        +-- Header
        |   +-- Logo / Title
        |   +-- Tab Switcher (Editor / Scale / Presets)
+       |   +-- Guides link (to /blog)
        |   +-- Undo / Redo buttons
        |   +-- Light Source toggle
        |   +-- Panel Toggle
        |   +-- Theme toggle (light/dark)
        |
-       +-- Left Panel
+       +-- Left Panel (float, z-30)
        |   +-- ShadowLayerList
        |   +-- ShadowLayerControls
        |       +-- Angle/Distance polar widget
@@ -379,7 +377,7 @@ RootLayout (layout.tsx)
        |       +-- Color picker (react-colorful)
        |       +-- Inset toggle
        |
-       +-- Center Canvas (ShadowPreview)
+       +-- Center Canvas (ShadowPreview, z-0)
        |   +-- Draggable/pannable viewport
        |   +-- Element renderer (box/circle/button/card)
        |   +-- Light Source Overlay (when active)
@@ -389,7 +387,7 @@ RootLayout (layout.tsx)
        |   +-- Split view (dark/light comparison)
        |   +-- Background preset selector
        |
-       +-- Right Panel
+       +-- Right Panel (float, z-30)
        |   +-- ShadowInspector (real-time statistics)
        |   +-- NaturalLanguageInput
        |   +-- ShadowMorph
@@ -399,10 +397,15 @@ RootLayout (layout.tsx)
        |   +-- FocusRingGenerator
        |   +-- ShadowPalette
        |
-       +-- Bottom Panel (CodeOutput)
-           +-- Format selector (css/tailwind/scss/js/flutter)
-           +-- Syntax-highlighted code display
-           +-- Copy to clipboard
+       +-- Bottom Panel (CodeOutput, float, z-30)
+       |   +-- Format selector (7 formats)
+       |   +-- Syntax-highlighted code display
+       |   +-- Copy to clipboard
+       |
+       +-- Mobile Bottom Tabs (z-20)
+           +-- Layers, Controls, Tools, Code panels (slide-up, z-30)
+           +-- Presets / Scale quick buttons
+           +-- Guides link
 ```
 
 ### Key Component Responsibilities
@@ -453,12 +456,12 @@ The `getFormatCode()` dispatch function selects the appropriate generator based 
 
 ## Mobile Responsiveness
 
-Layerbox has two main routes:
+Layerbox has two route groups:
 
-- `/` - Marketing landing page with SEO-optimized content (hero, features, how it works, FAQ)
-- `/editor` - The shadow generator tool with canvas, controls, and code output
+- `/` - The shadow generator tool with canvas, controls, and code output
+- `/blog` - Blog listing and posts for SEO/AEO content
 
-Mobile detection is handled by the `useMobile()` hook in `app/editor/page.tsx` which checks `window.innerWidth < 1024`.
+Mobile detection is handled by the `useMobile()` hook in `app/page.tsx` which checks `window.innerWidth < 1024`.
 
 ### Desktop (1024px and above)
 
@@ -536,25 +539,37 @@ The development server starts at `http://localhost:3000`.
 
 The application supports light and dark themes. Theme is stored in `localStorage` under the key `sg-theme`. An inline script in `layout.tsx` applies the theme class before the first paint to prevent flash.
 
-CSS custom properties for theme colors are defined in `globals.css`:
+CSS custom properties for theme colors are defined in `globals.css`. The application uses a consistent set of tokens across both themes:
 
 ```css
 :root {
-  --bg-primary: #0f0f0f;       /* Dark theme background */
-  --bg-secondary: #1a1a1a;
-  --text-primary: #f5f5f5;
-  --text-secondary: #a0a0a0;
-  --border: #2a2a2a;
-  /* ... */
+  --bg: #0b1414;                               /* Page background */
+  --surface: #111c1c;                           /* Card, panel */
+  --surface-raised: #172020;                     /* Hovered surface */
+  --surface-code: #0b1313;                       /* Code block */
+  --border: rgba(255, 255, 255, 0.07);           /* Default border */
+  --border-hover: rgba(255, 255, 255, 0.13);     /* Hover border */
+  --text: #bdc1bb;                               /* Primary text */
+  --text-muted: #6e8a85;                          /* Secondary text */
+  --text-faint: #364d4d;                          /* Disabled text */
+  --accent: #5e9e88;                              /* Primary action */
+  --accent-hover: #4e8e78;                        /* Accent hover */
+  --destructive: #c96060;                         /* Error states */
 }
 
 :root.light {
-  --bg-primary: #f8f8f8;       /* Light theme background */
-  --bg-secondary: #ffffff;
-  --text-primary: #1a1a1a;
-  --text-secondary: #6b6b6b;
-  --border: #e5e5e5;
-  /* ... */
+  --bg: #eef2f2;
+  --surface: #ffffff;
+  --surface-raised: #f0f5f5;
+  --surface-code: #f5f7f7;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.14);
+  --text: #0f2020;
+  --text-muted: #4a6868;
+  --text-faint: #7a9898;
+  --accent: #3d8a72;
+  --accent-hover: #2e7a62;
+  --destructive: #b04040;
 }
 ```
 
@@ -570,9 +585,11 @@ Always run `npm run build` before committing to catch TypeScript errors and Turb
 app/
   globals.css                    - Global styles, CSS custom properties, theme variables, animations
   layout.tsx                     - Root layout: metadata, JSON-LD, font loading, inline theme script
-  page.tsx                       - Marketing landing page at / (SEO content, hero, features, FAQ)
-  editor/
-    page.tsx                     - Shadow editor tool at /editor (all components, canvas, controls)
+  page.tsx                       - Shadow editor tool (canvas, controls, code output, mobile tabs)
+  blog/
+    page.tsx                     - Blog listing page (server component, SEO metadata)
+    [slug]/
+      page.tsx                   - Individual blog post (static generation, JSON-LD, structured content)
 components/
   code/
     CodeOutput.tsx               - Code export panel: format switching, syntax highlighting, clipboard copy
@@ -596,6 +613,7 @@ components/
 hooks/
   useShadowState.ts              - Central state management with undo/redo, URL sync, light source
 lib/
+  blog.ts                        - Blog post data (4 SEO-optimized posts with structured content)
   depthMeter.ts                  - Depth-to-multi-layer-shadow algorithm
   exportFormats.ts               - All export format generators (CSS, TW, SCSS, JS, Flutter)
   gradientShadow.ts              - Gradient shadow parameter types and generator

@@ -22,12 +22,12 @@ export function ShadowPalette({ seed, onSelect }: Props) {
         }}
       >
         <p
-          className="text-xs font-medium"
+          className="text-xs font-semibold"
           style={{ color: "var(--text-muted)" }}
         >
           Shadow Palette
         </p>
-        <p className="text-[11px]" style={{ color: "var(--text-faint)" }}>
+        <p className="text-xs" style={{ color: "var(--text-faint)" }}>
           Select a layer to generate variations from it.
         </p>
       </div>
@@ -57,14 +57,14 @@ export function ShadowPalette({ seed, onSelect }: Props) {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
         {palette.map((entry) => {
           const css = paletteShadowCss(entry);
           return (
             <button
               key={entry.name}
               onClick={() => onSelect(entry.shadow)}
-              className="group flex flex-col items-stretch gap-1.5 p-2 rounded-xl transition-all active:scale-[0.97] duration-150"
+              className="group flex flex-col items-stretch gap-2 p-3 rounded-xl transition-all active:scale-[0.97] duration-150"
               style={{
                 background: "var(--surface-raised)",
                 border: "1px solid var(--border)",
@@ -82,18 +82,18 @@ export function ShadowPalette({ seed, onSelect }: Props) {
             >
               {/* Mini preview */}
               <div
-                className="w-full h-14 rounded-lg flex items-center justify-center overflow-hidden"
+                className="w-full h-16 rounded-lg flex items-center justify-center overflow-hidden"
                 style={{ background: "#1a2828" }}
               >
                 <div
-                  className="w-7 h-7 rounded-lg bg-white transition-transform duration-200 group-hover:scale-105"
+                  className="w-8 h-8 rounded-lg bg-white transition-transform duration-200 group-hover:scale-105"
                   style={{ boxShadow: css }}
                 />
               </div>
               {/* Label row */}
               <div className="flex items-center gap-1.5 px-0.5">
                 <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  className="w-3 h-3 rounded-full shrink-0"
                   style={{ background: entry.dotColor }}
                 />
                 <span
@@ -104,7 +104,7 @@ export function ShadowPalette({ seed, onSelect }: Props) {
                 </span>
               </div>
               <span
-                className="text-[11px] leading-none px-0.5"
+                className="text-xs leading-relaxed px-0.5 line-clamp-2"
                 style={{ color: "var(--text-faint)" }}
               >
                 {entry.description}
