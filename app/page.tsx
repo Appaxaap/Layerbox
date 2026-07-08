@@ -63,7 +63,7 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col overflow-hidden sg-page">
       <header
-        className="shrink-0 h-13 flex items-center px-4 sm:px-5 animate-fade-in"
+        className="shrink-0 flex items-center px-4 sm:px-5 animate-fade-in"
         style={{
           borderBottom: "1px solid var(--border)",
           background: "var(--header-bg)",
@@ -156,7 +156,7 @@ export default function Home() {
       <div className="flex-1 min-h-0 overflow-hidden">
         {tab === "editor" && (
           <div className="h-full min-h-0 relative">
-            {/* Full-bleed preview */}
+            {/* Full-bleed preview — lowest layer */}
             <div className="absolute inset-0">
               <ShadowPreview
                 shadows={displayShadows}
@@ -168,124 +168,136 @@ export default function Home() {
               />
             </div>
 
-            {/* Floating: Layers panel — left side */}
-            <div
-              className="absolute top-3 left-3 w-[220px] max-h-[calc(100%-24px)] overflow-y-auto z-10 animate-fade-up rounded-2xl p-3"
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-              }}
-            >
-              <ShadowLayerList
-                shadows={shadows}
-                activeId={activeId}
-                onSelect={setActiveId}
-                onAdd={addLayer}
-                onRemove={removeLayer}
-                onDuplicate={duplicateLayer}
-                onToggleVisibility={toggleLayerVisibility}
-                onReorder={reorderLayers}
-              />
-            </div>
-
-            {/* Floating: Controls panel — bottom-left */}
-            {activeShadow && (
+            {/* ─── Left column: layers + controls (stacked, no overlap) ─── */}
+            <div className="absolute left-3 top-3 bottom-3 w-[270px] flex flex-col gap-2 z-10 pointer-events-none">
+              {/* Layers panel */}
               <div
-                className="absolute bottom-3 left-3 w-[300px] max-h-[60vh] overflow-y-auto z-10 animate-fade-up stagger-2"
+                className="shrink-0 pointer-events-auto animate-fade-up rounded-2xl p-3"
                 style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
                   filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
                 }}
               >
-                <div
-                  className="rounded-2xl p-3 pb-2 flex flex-col gap-1"
-                  style={{
-                    background: "var(--surface)",
-                    border: "1px solid var(--border)",
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-1 px-1">
-                    <span
-                      className="text-[10px] font-semibold uppercase tracking-wider"
-                      style={{ color: "var(--text-faint)" }}
-                    >
-                      Layer Controls
-                    </span>
-                    <span
-                      className="text-[10px] font-mono"
-                      style={{ color: "var(--text-faint)" }}
-                    >
-                      Layer{" "}
-                      {displayShadows.findIndex((s) => s.id === activeId) + 1}
-                    </span>
-                  </div>
-                  <ShadowLayerControls
-                    key={activeShadow.id}
-                    shadow={activeShadow}
-                    onChange={(patch) => updateLayer(activeShadow.id, patch)}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Floating: Tools panel — right side stack */}
-            <div className="absolute right-3 top-3 bottom-3 w-[300px] flex flex-col gap-2 z-10 pointer-events-none">
-              {/* Natural Language */}
-              <div
-                className="shrink-0 pointer-events-auto animate-fade-up"
-                style={{
-                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                }}
-              >
-                <NaturalLanguageInput onApply={loadPreset} />
+                <ShadowLayerList
+                  shadows={shadows}
+                  activeId={activeId}
+                  onSelect={setActiveId}
+                  onAdd={addLayer}
+                  onRemove={removeLayer}
+                  onDuplicate={duplicateLayer}
+                  onToggleVisibility={toggleLayerVisibility}
+                  onReorder={reorderLayers}
+                />
               </div>
 
-              {/* Depth Meter */}
-              <div
-                className="shrink-0 pointer-events-auto animate-fade-up stagger-1"
-                style={{
-                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                }}
-              >
-                <DepthMeter onApply={loadPreset} />
-              </div>
-
-              {/* Shadow DNA */}
-              <div
-                className="shrink-0 pointer-events-auto animate-fade-up stagger-2"
-                style={{
-                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                }}
-              >
-                <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
-              </div>
-
-              {/* Shadow Palette */}
+              {/* Controls panel */}
               {activeShadow && (
                 <div
-                  className="shrink-0 pointer-events-auto animate-fade-up stagger-3"
+                  className="flex-1 min-h-[180px] pointer-events-auto animate-fade-up stagger-1"
                   style={{
                     filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
                   }}
                 >
-                  <ShadowPalette
-                    seed={activeShadow}
-                    onSelect={(s) => {
-                      updateLayer(activeShadow.id, s);
+                  <div
+                    className="h-full rounded-2xl p-3 pb-2 flex flex-col gap-1 overflow-y-auto"
+                    style={{
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
                     }}
-                  />
+                  >
+                    <div className="flex items-center justify-between mb-1 px-1 shrink-0">
+                      <span
+                        className="text-[10px] font-semibold uppercase tracking-wider"
+                        style={{ color: "var(--text-faint)" }}
+                      >
+                        Layer Controls
+                      </span>
+                      <span
+                        className="text-[10px] font-mono"
+                        style={{ color: "var(--text-faint)" }}
+                      >
+                        Layer{" "}
+                        {displayShadows.findIndex((s) => s.id === activeId) + 1}
+                      </span>
+                    </div>
+                    <ShadowLayerControls
+                      key={activeShadow.id}
+                      shadow={activeShadow}
+                      onChange={(patch) => updateLayer(activeShadow.id, patch)}
+                    />
+                  </div>
                 </div>
               )}
+            </div>
 
-              {/* Spacer + Code Output */}
-              <div className="flex-1 min-h-2" />
+            {/* ─── Right column: tools stack (scrollable) ─── */}
+            <div className="absolute right-3 top-3 bottom-3 w-[300px] z-10">
               <div
-                className="flex-1 min-h-[140px] pointer-events-auto animate-fade-up stagger-4 rounded-2xl overflow-hidden"
+                className="h-full overflow-y-auto flex flex-col gap-2 pr-0.5 pointer-events-auto"
                 style={{
-                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(255,255,255,0.08) transparent",
                 }}
               >
-                <CodeOutput shadows={displayShadows} />
+                {/* Natural Language */}
+                <div
+                  className="shrink-0 pointer-events-auto animate-fade-up"
+                  style={{
+                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  }}
+                >
+                  <NaturalLanguageInput onApply={loadPreset} />
+                </div>
+
+                {/* Depth Meter */}
+                <div
+                  className="shrink-0 pointer-events-auto animate-fade-up stagger-1"
+                  style={{
+                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  }}
+                >
+                  <DepthMeter onApply={loadPreset} />
+                </div>
+
+                {/* Shadow DNA */}
+                <div
+                  className="shrink-0 pointer-events-auto animate-fade-up stagger-2"
+                  style={{
+                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  }}
+                >
+                  <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
+                </div>
+
+                {/* Shadow Palette */}
+                {activeShadow && (
+                  <div
+                    className="shrink-0 pointer-events-auto animate-fade-up stagger-3"
+                    style={{
+                      filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                    }}
+                  >
+                    <ShadowPalette
+                      seed={activeShadow}
+                      onSelect={(s) => {
+                        updateLayer(activeShadow.id, s);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Code Output */}
+                <div className="min-h-[200px] pointer-events-auto animate-fade-up stagger-4 rounded-2xl overflow-hidden">
+                  <div
+                    className="h-full"
+                    style={{
+                      filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                    }}
+                  >
+                    <CodeOutput shadows={displayShadows} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

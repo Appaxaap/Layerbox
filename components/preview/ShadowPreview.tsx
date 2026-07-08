@@ -97,8 +97,8 @@ export function ShadowPreview({
         ...dotGrid,
       }}
     >
-      {/* Floating material + shape selector - top-left overlay */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+      {/* Floating material + shape selector - centered top overlay */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-col gap-1.5 items-center">
         {/* Material selector */}
         {onMaterialChange && (
           <div
@@ -139,7 +139,7 @@ export function ShadowPreview({
 
         {/* Shape selector */}
         <div
-          className="flex items-center gap-0.5 p-0.5 rounded-xl"
+          className="flex items-center gap-0.5 p-0.5 rounded-xl mx-auto"
           style={{
             background: isLight
               ? "rgba(255,255,255,0.75)"
