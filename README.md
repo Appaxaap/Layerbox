@@ -530,5 +530,3 @@ Use conventional commit prefixes:
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ---
-
-<p align="center">Built with Next.js 16, React 19, and Tailwind CSS v4</p>
