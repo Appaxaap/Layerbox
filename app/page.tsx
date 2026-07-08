@@ -220,20 +220,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Guides link - desktop only */}
-          {!isMobile && (
-            <a
-              href="/blog"
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-150 active:scale-95 hover:opacity-80"
-              style={{
-                color: "var(--text-muted)",
-                border: "1px solid var(--border)",
-              }}
-            >
-              Guides
-            </a>
-          )}
-
           {/* Undo / Redo */}
           <div className="flex items-center gap-0.5">
             <button
@@ -533,28 +519,6 @@ export default function Home() {
                   </button>
                 );
               })}
-
-              {/* Guides link - mobile */}
-              <a
-                href="/blog"
-                className="flex flex-col items-center gap-0.5 py-2 px-2 transition-all duration-150"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                <span className="text-[10px] font-semibold">Guides</span>
-              </a>
 
               {/* Presets & Scale quick buttons */}
               <div className="flex flex-col gap-0.5 items-center py-2 px-1">

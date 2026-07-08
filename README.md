@@ -344,24 +344,17 @@ Categories: Subtle, Elevated, Material, Apple, Soft UI, Glassmorphism, Neumorphi
 
 ```
 Routes:
-  /       -> EditorPage (app/page.tsx)   - Shadow generator tool (main route)
-  /blog   -> BlogPage (app/blog/page.tsx) - Blog listing for SEO/AEO content
-  /blog/[slug] -> BlogPostPage            - Individual blog post
+  / -> EditorPage (app/page.tsx) - Shadow generator tool (main route)
 
 RootLayout (layout.tsx)
   +-- themeScript (inline script prevents flash)
   +-- JSON-LD structured data (SoftwareApplication schema)
-  +-- BlogPage (app/blog/page.tsx) [at /blog]
-  |
-  +-- BlogPostPage (app/blog/[slug]/page.tsx) [at /blog/[slug]]
-  |
   +-- EditorPage (app/page.tsx) [at /]
        +-- useShadowState (hook)
        |
        +-- Header
        |   +-- Logo / Title
        |   +-- Tab Switcher (Editor / Scale / Presets)
-       |   +-- Guides link (to /blog)
        |   +-- Undo / Redo buttons
        |   +-- Light Source toggle
        |   +-- Panel Toggle
@@ -405,7 +398,6 @@ RootLayout (layout.tsx)
        +-- Mobile Bottom Tabs (z-20)
            +-- Layers, Controls, Tools, Code panels (slide-up, z-30)
            +-- Presets / Scale quick buttons
-           +-- Guides link
 ```
 
 ### Key Component Responsibilities
@@ -456,10 +448,9 @@ The `getFormatCode()` dispatch function selects the appropriate generator based 
 
 ## Mobile Responsiveness
 
-Layerbox has two route groups:
+Layerbox has a single route:
 
 - `/` - The shadow generator tool with canvas, controls, and code output
-- `/blog` - Blog listing and posts for SEO/AEO content
 
 Mobile detection is handled by the `useMobile()` hook in `app/page.tsx` which checks `window.innerWidth < 1024`.
 
@@ -586,10 +577,7 @@ app/
   globals.css                    - Global styles, CSS custom properties, theme variables, animations
   layout.tsx                     - Root layout: metadata, JSON-LD, font loading, inline theme script
   page.tsx                       - Shadow editor tool (canvas, controls, code output, mobile tabs)
-  blog/
-    page.tsx                     - Blog listing page (server component, SEO metadata)
-    [slug]/
-      page.tsx                   - Individual blog post (static generation, JSON-LD, structured content)
+  (blog section removed)
 components/
   code/
     CodeOutput.tsx               - Code export panel: format switching, syntax highlighting, clipboard copy
@@ -613,7 +601,6 @@ components/
 hooks/
   useShadowState.ts              - Central state management with undo/redo, URL sync, light source
 lib/
-  blog.ts                        - Blog post data (4 SEO-optimized posts with structured content)
   depthMeter.ts                  - Depth-to-multi-layer-shadow algorithm
   exportFormats.ts               - All export format generators (CSS, TW, SCSS, JS, Flutter)
   gradientShadow.ts              - Gradient shadow parameter types and generator
