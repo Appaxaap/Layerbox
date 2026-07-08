@@ -137,7 +137,7 @@ export function ShadowPreview({
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden"
+      className="relative w-full h-full"
       style={{
         background: canvasBg,
         transition: "background 0.2s ease",
