@@ -233,47 +233,30 @@ export default function Home() {
 
             {/* ─── Panel C: Properties / Tools (right) ─── */}
             <div
-              className="absolute right-3 top-3 bottom-3 w-[270px] z-10 animate-fade-up overflow-y-auto pointer-events-auto"
+              className="absolute right-3 top-3 bottom-3 w-[270px] z-10 animate-fade-up pointer-events-auto rounded-2xl overflow-hidden"
               style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "rgba(255,255,255,0.08) transparent",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
               }}
             >
-              <div className="flex flex-col gap-2 h-full">
-                <div
-                  style={{
-                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                  }}
-                >
-                  <NaturalLanguageInput onApply={loadPreset} />
-                </div>
-                <div
-                  style={{
-                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                  }}
-                >
-                  <DepthMeter onApply={loadPreset} />
-                </div>
-                <div
-                  style={{
-                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                  }}
-                >
-                  <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
-                </div>
+              <div
+                className="flex flex-col gap-2 p-3 h-full overflow-y-auto"
+                style={{
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(255,255,255,0.08) transparent",
+                }}
+              >
+                <NaturalLanguageInput onApply={loadPreset} />
+                <DepthMeter onApply={loadPreset} />
+                <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
                 {activeShadow && (
-                  <div
-                    style={{
-                      filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  <ShadowPalette
+                    seed={activeShadow}
+                    onSelect={(s) => {
+                      updateLayer(activeShadow.id, s);
                     }}
-                  >
-                    <ShadowPalette
-                      seed={activeShadow}
-                      onSelect={(s) => {
-                        updateLayer(activeShadow.id, s);
-                      }}
-                    />
-                  </div>
+                  />
                 )}
                 <div className="flex-1" />
               </div>
@@ -281,10 +264,11 @@ export default function Home() {
 
             {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
             <div
-              className="absolute bottom-3 left-[285px] right-[285px] h-[320px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
+              className="absolute bottom-3 left-[300px] right-[300px] h-[360px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
               style={{
+                background: "var(--surface-code)",
+                border: "1px solid var(--border)",
                 filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                borderTop: "1px solid var(--border)",
               }}
             >
               <CodeOutput shadows={displayShadows} />
