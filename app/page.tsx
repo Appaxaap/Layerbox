@@ -239,7 +239,7 @@ export default function Home() {
                 scrollbarColor: "rgba(255,255,255,0.08) transparent",
               }}
             >
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 h-full">
                 <div
                   style={{
                     filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
@@ -275,18 +275,19 @@ export default function Home() {
                     />
                   </div>
                 )}
+                <div className="flex-1" />
               </div>
-            </div>
 
-            {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
-            <div
-              className="absolute bottom-3 left-[285px] right-[285px] h-[260px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
-              style={{
-                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-                borderTop: "1px solid var(--border)",
-              }}
-            >
-              <CodeOutput shadows={displayShadows} />
+              {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
+              <div
+                className="absolute bottom-3 left-[285px] right-[285px] h-[260px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
+                style={{
+                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  borderTop: "1px solid var(--border)",
+                }}
+              >
+                <CodeOutput shadows={displayShadows} />
+              </div>
             </div>
           </div>
         )}
