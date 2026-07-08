@@ -88,6 +88,7 @@ export function ShadowPreview({
   const [interactionState, setInteractionState] =
     useState<InteractionState>("normal");
   const [elementSize, setElementSize] = useState(128);
+  const [elementRotation, setElementRotation] = useState(0);
 
   const handlePanStart = useCallback((e: React.PointerEvent) => {
     isPanning.current = true;
@@ -433,7 +434,7 @@ export function ShadowPreview({
             {/* The preview element with interaction state simulation */}
             <div
               style={{
-                transform: interactionTransform,
+                transform: `${interactionTransform} rotate(${elementRotation}deg)`,
                 transition:
                   "transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
                 outline:
@@ -576,8 +577,51 @@ export function ShadowPreview({
         </div>
       </div>
 
-      {/* Element size slider — bottom center */}
+      {/* Element size + rotation controls — bottom center */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 animate-fade-up">
+        {/* Rotation buttons */}
+        <div
+          className="pointer-events-auto flex items-center gap-0.5 p-0.5 rounded-xl mb-1.5 mx-auto w-fit"
+          style={{
+            background: isLight
+              ? "rgba(255,255,255,0.75)"
+              : "rgba(11,20,20,0.75)",
+            border: "1px solid var(--border)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+          }}
+        >
+          <span
+            className="text-[9px] font-semibold px-1.5"
+            style={{ color: "var(--text-faint)" }}
+          >
+            Rotate
+          </span>
+          {[
+            { label: "0°", value: 0 },
+            { label: "45°", value: 45 },
+            { label: "90°", value: 90 },
+            { label: "180°", value: 180 },
+          ].map((r) => {
+            const active = elementRotation === r.value;
+            return (
+              <button
+                key={r.value}
+                onClick={() => setElementRotation(r.value)}
+                className="px-2 py-1 text-[10px] font-semibold rounded-lg transition-all active:scale-95"
+                style={{
+                  background: active ? "var(--surface-raised)" : "transparent",
+                  color: active ? "var(--text)" : "var(--text-muted)",
+                  border: active
+                    ? "1px solid var(--border-hover)"
+                    : "1px solid transparent",
+                }}
+              >
+                {r.label}
+              </button>
+            );
+          })}
+        </div>
         <div
           className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-xl"
           style={{
