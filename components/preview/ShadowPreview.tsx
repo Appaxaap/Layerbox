@@ -25,6 +25,8 @@ type Props = {
   onBgChange?: (bgId: string) => void;
 };
 
+type InteractionState = "normal" | "hover" | "focus" | "active";
+
 const PRESET_BG_LIST: { id: string; label: string; css: string }[] = [
   { id: "light", label: "Light", css: "#F0F3F2" },
   { id: "white", label: "White", css: "#ffffff" },
@@ -56,6 +58,13 @@ const SHAPES: { label: string; value: PreviewShape }[] = [
   { label: "Card", value: "card" },
 ];
 
+const INTERACTION_STATES: { label: string; value: InteractionState }[] = [
+  { label: "Normal", value: "normal" },
+  { label: "Hover", value: "hover" },
+  { label: "Focus", value: "focus" },
+  { label: "Active", value: "active" },
+];
+
 const PAN_BOUNDS = 600;
 
 export function ShadowPreview({
@@ -76,6 +85,8 @@ export function ShadowPreview({
   const isPanning = useRef(false);
   const panStart = useRef({ clientX: 0, clientY: 0, originX: 0, originY: 0 });
   const contentRef = useRef<HTMLDivElement>(null);
+  const [interactionState, setInteractionState] =
+    useState<InteractionState>("normal");
 
   const handlePanStart = useCallback((e: React.PointerEvent) => {
     isPanning.current = true;
@@ -194,6 +205,29 @@ export function ShadowPreview({
     backgroundSize: "22px 22px",
   };
 
+  // Interaction state transforms
+  const interactionTransform =
+    interactionState === "hover"
+      ? "scale(1.03)"
+      : interactionState === "active"
+        ? "scale(0.97)"
+        : interactionState === "focus"
+          ? "scale(1.02)"
+          : "scale(1)";
+
+  const interactionShadow =
+    interactionState === "hover" || interactionState === "focus"
+      ? shadowValue
+      : interactionState === "active"
+        ? shadowValue
+        : shadowValue;
+
+  // CSS snippet for interaction states
+  const stateCss =
+    interactionState !== "normal"
+      ? `.element {\n  box-shadow: ${shadowValue};\n  transition: box-shadow 0.2s cubic-bezier(0.16,1,0.3,1), transform 0.2s ease;\n}\n\n.element:${interactionState} {\n  transform: ${interactionTransform};\n  box-shadow: ${shadowValue};\n}`
+      : "";
+
   return (
     <div
       className="relative w-full h-full"
@@ -243,37 +277,77 @@ export function ShadowPreview({
           </div>
         )}
 
-        {/* Shape selector */}
-        <div
-          className="pointer-events-auto flex items-center gap-0.5 p-0.5 rounded-xl mx-auto"
-          style={{
-            background: isLight
-              ? "rgba(255,255,255,0.75)"
-              : "rgba(11,20,20,0.75)",
-            border: "1px solid var(--border)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-          }}
-        >
-          {SHAPES.map((s) => {
-            const active = s.value === shape;
-            return (
-              <button
-                key={s.value}
-                onClick={() => setShape(s.value)}
-                className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all"
-                style={{
-                  background: active ? "var(--surface-raised)" : "transparent",
-                  color: active ? "var(--text)" : "var(--text-muted)",
-                  border: active
-                    ? "1px solid var(--border-hover)"
-                    : "1px solid transparent",
-                }}
-              >
-                {s.label}
-              </button>
-            );
-          })}
+        {/* Interaction state toggles + Shape row */}
+        <div className="flex items-center gap-2">
+          {/* Interaction states */}
+          <div
+            className="pointer-events-auto flex items-center gap-0.5 p-0.5 rounded-xl"
+            style={{
+              background: isLight
+                ? "rgba(255,255,255,0.75)"
+                : "rgba(11,20,20,0.75)",
+              border: "1px solid var(--border)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+            }}
+          >
+            {INTERACTION_STATES.map((st) => {
+              const active = st.value === interactionState;
+              return (
+                <button
+                  key={st.value}
+                  onClick={() => setInteractionState(st.value)}
+                  className="px-2.5 py-1.5 text-[10px] font-semibold rounded-xl transition-all active:scale-95"
+                  style={{
+                    background: active
+                      ? "var(--surface-raised)"
+                      : "transparent",
+                    color: active ? "var(--text)" : "var(--text-muted)",
+                    border: active
+                      ? "1px solid var(--border-hover)"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {st.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Shape selector */}
+          <div
+            className="pointer-events-auto flex items-center gap-0.5 p-0.5 rounded-xl"
+            style={{
+              background: isLight
+                ? "rgba(255,255,255,0.75)"
+                : "rgba(11,20,20,0.75)",
+              border: "1px solid var(--border)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+            }}
+          >
+            {SHAPES.map((s) => {
+              const active = s.value === shape;
+              return (
+                <button
+                  key={s.value}
+                  onClick={() => setShape(s.value)}
+                  className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all"
+                  style={{
+                    background: active
+                      ? "var(--surface-raised)"
+                      : "transparent",
+                    color: active ? "var(--text)" : "var(--text-muted)",
+                    border: active
+                      ? "1px solid var(--border-hover)"
+                      : "1px solid transparent",
+                  }}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Background selector */}
@@ -355,120 +429,153 @@ export function ShadowPreview({
               transition: "background 0.2s ease, border-color 0.2s ease",
             }}
           >
-            {shape === "box" && (
-              <div
-                className="w-32 h-32 rounded-2xl"
-                style={{
-                  background: material.elementBg,
-                  boxShadow: shadowValue,
-                  transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
-                  ...(material.elementExtra
-                    ? Object.fromEntries(
-                        material.elementExtra
-                          .split(";")
-                          .filter(Boolean)
-                          .map((s) => {
-                            const [k, ...v] = s.split(":");
-                            return [k.trim(), v.join(":").trim()];
-                          }),
-                      )
-                    : {}),
-                }}
-              />
-            )}
+            {/* The preview element with interaction state simulation */}
+            <div
+              style={{
+                transform: interactionTransform,
+                transition:
+                  "transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
+                outline:
+                  interactionState === "focus"
+                    ? `3px solid ${shadowColor}`
+                    : "none",
+                outlineOffset: interactionState === "focus" ? "3px" : "0",
+              }}
+            >
+              {shape === "box" && (
+                <div
+                  className="w-32 h-32 rounded-2xl"
+                  style={{
+                    background: material.elementBg,
+                    boxShadow: shadowValue,
+                    transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
+                    ...(material.elementExtra
+                      ? Object.fromEntries(
+                          material.elementExtra
+                            .split(";")
+                            .filter(Boolean)
+                            .map((s) => {
+                              const [k, ...v] = s.split(":");
+                              return [k.trim(), v.join(":").trim()];
+                            }),
+                        )
+                      : {}),
+                  }}
+                />
+              )}
 
-            {shape === "circle" && (
-              <div
-                className="w-32 h-32 rounded-full"
-                style={{
-                  background: material.elementBg,
-                  boxShadow: shadowValue,
-                  transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
-                  ...(material.elementExtra
-                    ? Object.fromEntries(
-                        material.elementExtra
-                          .split(";")
-                          .filter(Boolean)
-                          .map((s) => {
-                            const [k, ...v] = s.split(":");
-                            return [k.trim(), v.join(":").trim()];
-                          }),
-                      )
-                    : {}),
-                }}
-              />
-            )}
+              {shape === "circle" && (
+                <div
+                  className="w-32 h-32 rounded-full"
+                  style={{
+                    background: material.elementBg,
+                    boxShadow: shadowValue,
+                    transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
+                    ...(material.elementExtra
+                      ? Object.fromEntries(
+                          material.elementExtra
+                            .split(";")
+                            .filter(Boolean)
+                            .map((s) => {
+                              const [k, ...v] = s.split(":");
+                              return [k.trim(), v.join(":").trim()];
+                            }),
+                        )
+                      : {}),
+                  }}
+                />
+              )}
 
-            {shape === "button" && (
-              <div
-                className="px-8 py-3.5 rounded-full font-semibold text-sm select-none"
-                style={{
-                  background: material.elementBg,
-                  color: textColor,
-                  boxShadow: shadowValue,
-                  transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
-                  ...(material.elementExtra
-                    ? Object.fromEntries(
-                        material.elementExtra
-                          .split(";")
-                          .filter(Boolean)
-                          .map((s) => {
-                            const [k, ...v] = s.split(":");
-                            return [k.trim(), v.join(":").trim()];
-                          }),
-                      )
-                    : {}),
-                }}
-              >
-                Click me
-              </div>
-            )}
+              {shape === "button" && (
+                <div
+                  className="px-8 py-3.5 rounded-full font-semibold text-sm select-none"
+                  style={{
+                    background: material.elementBg,
+                    color: textColor,
+                    boxShadow: shadowValue,
+                    transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
+                    ...(material.elementExtra
+                      ? Object.fromEntries(
+                          material.elementExtra
+                            .split(";")
+                            .filter(Boolean)
+                            .map((s) => {
+                              const [k, ...v] = s.split(":");
+                              return [k.trim(), v.join(":").trim()];
+                            }),
+                        )
+                      : {}),
+                  }}
+                >
+                  Click me
+                </div>
+              )}
 
-            {shape === "card" && (
-              <div
-                className="w-60 rounded-2xl p-5 flex flex-col gap-3"
-                style={{
-                  background: material.elementBg,
-                  boxShadow: shadowValue,
-                  transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
-                  ...(material.elementExtra
-                    ? Object.fromEntries(
-                        material.elementExtra
-                          .split(";")
-                          .filter(Boolean)
-                          .map((s) => {
-                            const [k, ...v] = s.split(":");
-                            return [k.trim(), v.join(":").trim()];
-                          }),
-                      )
-                    : {}),
-                }}
-              >
+              {shape === "card" && (
                 <div
-                  className="w-9 h-9 rounded-xl"
-                  style={{ background: "#EEF2F0" }}
-                />
-                <div
-                  className="h-2.5 rounded-full w-3/4"
-                  style={{ background: "#E8ECEA" }}
-                />
-                <div
-                  className="h-2 rounded-full w-full"
-                  style={{ background: "#F0F3F2" }}
-                />
-                <div
-                  className="h-2 rounded-full w-5/6"
-                  style={{ background: "#F0F3F2" }}
-                />
-                <div
-                  className="h-2 rounded-full w-4/6"
-                  style={{ background: "#F0F3F2" }}
-                />
-              </div>
-            )}
+                  className="w-60 rounded-2xl p-5 flex flex-col gap-3"
+                  style={{
+                    background: material.elementBg,
+                    boxShadow: shadowValue,
+                    transition: "box-shadow 0.2s cubic-bezier(0.16,1,0.3,1)",
+                    ...(material.elementExtra
+                      ? Object.fromEntries(
+                          material.elementExtra
+                            .split(";")
+                            .filter(Boolean)
+                            .map((s) => {
+                              const [k, ...v] = s.split(":");
+                              return [k.trim(), v.join(":").trim()];
+                            }),
+                        )
+                      : {}),
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl"
+                    style={{ background: "#EEF2F0" }}
+                  />
+                  <div
+                    className="h-2.5 rounded-full w-3/4"
+                    style={{ background: "#E8ECEA" }}
+                  />
+                  <div
+                    className="h-2 rounded-full w-full"
+                    style={{ background: "#F0F3F2" }}
+                  />
+                  <div
+                    className="h-2 rounded-full w-5/6"
+                    style={{ background: "#F0F3F2" }}
+                  />
+                  <div
+                    className="h-2 rounded-full w-4/6"
+                    style={{ background: "#F0F3F2" }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* State CSS tooltip (bottom of canvas) */}
+      {interactionState !== "normal" && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 animate-fade-up">
+          <div
+            className="rounded-xl px-4 py-2 text-[10px] font-mono leading-relaxed whitespace-pre select-all"
+            style={{
+              background: "rgba(11,20,20,0.9)",
+              border: "1px solid var(--border)",
+              color: "var(--text-muted)",
+              backdropFilter: "blur(8px)",
+              maxWidth: "90vw",
+              overflow: "auto",
+            }}
+          >
+            {stateCss}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
