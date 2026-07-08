@@ -87,6 +87,7 @@ export function ShadowPreview({
   const contentRef = useRef<HTMLDivElement>(null);
   const [interactionState, setInteractionState] =
     useState<InteractionState>("normal");
+  const [elementSize, setElementSize] = useState(128);
 
   const handlePanStart = useCallback((e: React.PointerEvent) => {
     isPanning.current = true;
@@ -444,7 +445,11 @@ export function ShadowPreview({
             >
               {shape === "box" && (
                 <div
-                  className="w-32 h-32 rounded-2xl"
+                  className="rounded-2xl"
+                  style={{
+                    width: elementSize,
+                    height: elementSize,
+                  }}
                   style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
@@ -466,7 +471,11 @@ export function ShadowPreview({
 
               {shape === "circle" && (
                 <div
-                  className="w-32 h-32 rounded-full"
+                  className="rounded-full"
+                  style={{
+                    width: elementSize,
+                    height: elementSize,
+                  }}
                   style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
@@ -488,7 +497,13 @@ export function ShadowPreview({
 
               {shape === "button" && (
                 <div
-                  className="px-8 py-3.5 rounded-full font-semibold text-sm select-none"
+                  className="rounded-full font-semibold text-sm select-none"
+                  style={{
+                    paddingLeft: Math.round(elementSize * 0.25),
+                    paddingRight: Math.round(elementSize * 0.25),
+                    paddingTop: Math.round(elementSize * 0.1),
+                    paddingBottom: Math.round(elementSize * 0.1),
+                  }}
                   style={{
                     background: material.elementBg,
                     color: textColor,
@@ -513,7 +528,10 @@ export function ShadowPreview({
 
               {shape === "card" && (
                 <div
-                  className="w-60 rounded-2xl p-5 flex flex-col gap-3"
+                  className="rounded-2xl p-5 flex flex-col gap-3"
+                  style={{
+                    width: Math.max(elementSize * 1.5, 200),
+                  }}
                   style={{
                     background: material.elementBg,
                     boxShadow: shadowValue,
@@ -554,6 +572,68 @@ export function ShadowPreview({
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Element size slider — bottom center */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 animate-fade-up">
+        <div
+          className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-xl"
+          style={{
+            background: isLight
+              ? "rgba(255,255,255,0.75)"
+              : "rgba(11,20,20,0.75)",
+            border: "1px solid var(--border)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+          }}
+        >
+          {/* Preset sizes */}
+          {[
+            { label: "S", value: 80 },
+            { label: "M", value: 128 },
+            { label: "L", value: 200 },
+            { label: "XL", value: 300 },
+          ].map((preset) => {
+            const active = elementSize === preset.value;
+            return (
+              <button
+                key={preset.label}
+                onClick={() => setElementSize(preset.value)}
+                className="px-2.5 py-1 text-[10px] font-semibold rounded-lg transition-all active:scale-95"
+                style={{
+                  background: active ? "var(--surface-raised)" : "transparent",
+                  color: active ? "var(--text)" : "var(--text-muted)",
+                  border: active
+                    ? "1px solid var(--border-hover)"
+                    : "1px solid transparent",
+                }}
+              >
+                {preset.label}
+              </button>
+            );
+          })}
+          {/* Custom size slider */}
+          <div className="flex items-center gap-1.5 ml-1">
+            <input
+              type="range"
+              min={40}
+              max={400}
+              value={elementSize}
+              onChange={(e) => setElementSize(Number(e.target.value))}
+              className="w-16 h-1 rounded-full appearance-none cursor-pointer"
+              style={{
+                background: "var(--surface-raised)",
+                accentColor: "var(--accent)",
+              }}
+            />
+            <span
+              className="text-[10px] font-mono font-medium min-w-[32px] text-right"
+              style={{ color: "var(--accent)" }}
+            >
+              {elementSize}px
+            </span>
           </div>
         </div>
       </div>
