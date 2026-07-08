@@ -104,6 +104,155 @@ function SliderRow({
   );
 }
 
+/** Polar angle/distance control that replaces X/Y sliders */
+function AngleDistanceControl({
+  x,
+  y,
+  onChange,
+}: {
+  x: number;
+  y: number;
+  onChange: (x: number, y: number) => void;
+}) {
+  // Convert cartesian to polar
+  const distance = Math.round(Math.sqrt(x * x + y * y));
+  const rawAngle = (Math.atan2(y, x) * 180) / Math.PI;
+  const angle = rawAngle < 0 ? rawAngle + 360 : rawAngle;
+
+  function handleAngleChange(deg: number) {
+    const rad = (deg * Math.PI) / 180;
+    const d = distance || 1;
+    const nx = Math.round(d * Math.cos(rad));
+    const ny = Math.round(d * Math.sin(rad));
+    onChange(nx, ny);
+  }
+
+  function handleDistanceChange(d: number) {
+    const rad = (angle * Math.PI) / 180;
+    const nx = Math.round(d * Math.cos(rad));
+    const ny = Math.round(d * Math.sin(rad));
+    onChange(nx, ny);
+  }
+
+  // Direction indicator angle (for the visual dot)
+  const indicatorDeg = angle + 90; // CSS rotate starts from top, we start from right
+
+  return (
+    <div
+      className="rounded-xl p-3 flex flex-col gap-3"
+      style={{
+        background: "var(--surface-raised)",
+        border: "1px solid var(--border)",
+      }}
+    >
+      {/* Visual direction widget */}
+      <div className="flex items-center gap-3">
+        <div
+          className="relative w-14 h-14 rounded-full shrink-0"
+          style={{
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          {/* Direction line */}
+          <div
+            className="absolute top-1/2 left-1/2 w-0.5 rounded-full"
+            style={{
+              height: distance > 0 ? Math.min(distance / 2, 20) + 6 : 0,
+              background: "var(--accent)",
+              transformOrigin: "0 0",
+              transform: `rotate(${indicatorDeg}deg) translateY(-50%)`,
+              opacity: distance > 0 ? 1 : 0.3,
+            }}
+          />
+          {/* Center dot */}
+          <div
+            className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2"
+            style={{ background: "var(--text-muted)" }}
+          />
+          {/* Direction endpoint */}
+          {distance > 0 && (
+            <div
+              className="absolute w-2.5 h-2.5 rounded-full -translate-x-1/2 -translate-y-1/2"
+              style={{
+                background: "var(--accent)",
+                top: `calc(50% + ${Math.min(-Math.sin((angle * Math.PI) / 180) * Math.min(distance / 1.5, 24), 24)}px)`,
+                left: `calc(50% + ${Math.min(Math.cos((angle * Math.PI) / 180) * Math.min(distance / 1.5, 24), 24)}px)`,
+              }}
+            />
+          )}
+          {/* NSEW labels */}
+          <span
+            className="absolute text-[8px] font-semibold"
+            style={{
+              color: "var(--text-faint)",
+              top: 3,
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          >
+            N
+          </span>
+        </div>
+
+        {/* Angle / Distance readout */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline justify-between gap-2 mb-1">
+            <span
+              className="text-[11px] font-semibold"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Angle
+            </span>
+            <span
+              className="text-[11px] font-mono font-medium"
+              style={{ color: "var(--accent)" }}
+            >
+              {Math.round(angle)}°
+            </span>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
+            <span
+              className="text-[11px] font-semibold"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Distance
+            </span>
+            <span
+              className="text-[11px] font-mono font-medium"
+              style={{ color: "var(--accent)" }}
+            >
+              {distance}px
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Angle slider */}
+      <SliderRow
+        label="Angle"
+        value={Math.round(angle)}
+        min={0}
+        max={360}
+        step={1}
+        unit="°"
+        onChange={handleAngleChange}
+      />
+
+      {/* Distance slider */}
+      <SliderRow
+        label="Distance"
+        value={distance}
+        min={0}
+        max={140}
+        step={1}
+        unit="px"
+        onChange={handleDistanceChange}
+      />
+    </div>
+  );
+}
+
 function ColorPickerDialog({
   color,
   hexInput,
@@ -214,21 +363,11 @@ export function ShadowLayerControls({ shadow, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <SliderRow
-        label="Horizontal (X)"
-        value={shadow.x}
-        min={-100}
-        max={100}
-        step={1}
-        onChange={(x) => onChange({ x })}
-      />
-      <SliderRow
-        label="Vertical (Y)"
-        value={shadow.y}
-        min={-100}
-        max={100}
-        step={1}
-        onChange={(y) => onChange({ y })}
+      {/* Angle / Distance polar control */}
+      <AngleDistanceControl
+        x={shadow.x}
+        y={shadow.y}
+        onChange={(x, y) => onChange({ x, y })}
       />
       <SliderRow
         label="Blur Radius"
