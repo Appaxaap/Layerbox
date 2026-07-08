@@ -94,13 +94,18 @@ export default function Home() {
   }, [undo, redo]);
 
   useEffect(() => {
-    setIsLight(document.documentElement.classList.contains("light"));
+    const light = document.documentElement.classList.contains("light");
+    setIsLight(light);
+    // Match canvas background to UI theme by default
+    setBgId(light ? "light" : "dark");
   }, []);
 
   function toggleTheme() {
     const next = !isLight;
     setIsLight(next);
     document.documentElement.classList.toggle("light", next);
+    // Sync canvas background to follow the UI theme
+    setBgId(next ? "light" : "dark");
     try {
       localStorage.setItem("sg-theme", next ? "light" : "dark");
     } catch {
