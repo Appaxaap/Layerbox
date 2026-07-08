@@ -19,12 +19,12 @@ Design, visualize, and export complex box-shadow stacks with pixel-perfect preci
 
 ## Features
 
-### 🎨 Multi-Layer Shadow Engine
+### Multi-Layer Shadow Engine
 - **Add, remove, reorder, duplicate**, and **toggle visibility** of individual shadow layers
 - **Drag-to-reorder** layers with a grip handle
 - Each layer gets its own full set of independent controls
 
-### 🎛 Per-Layer Controls
+### Per-Layer Controls
 - **Angle / Distance polar control** - a visual direction widget with NSEW labels replaces raw X/Y sliders
 - **Blur radius** - 0–200px
 - **Spread radius** - -50px to 100px
@@ -32,7 +32,7 @@ Design, visualize, and export complex box-shadow stacks with pixel-perfect preci
 - **Color picker** - full `react-colorful` dialog with hex input
 - **Inset toggle** - switch between drop shadow and inset shadow
 
-### 💬 Natural Language Shadow Input
+### Natural Language Shadow Input
 Describe shadows in plain English and let the parser generate layers automatically:
 
 ```
@@ -44,7 +44,7 @@ Describe shadows in plain English and let the parser generate layers automatical
 
 A rule-based engine handles intensity, direction, style, layering, and color hints - no AI needed.
 
-### ⏯ Shadow Morph (A -> B Transition)
+### Shadow Morph (A -> B Transition)
 Create animated shadow transitions between two states:
 - Configure State B's blur, spread, opacity, color
 - **Play / Pause** the morph animation
@@ -52,7 +52,7 @@ Create animated shadow transitions between two states:
 - Choose **easing** function
 - Output as CSS **transition** or **keyframe animation** with configurable iterations
 
-### 🌈 Gradient Shadow Generator
+### Gradient Shadow Generator
 Generate multi-layer shadow stacks that simulate smooth gradient falloff:
 - **Depth** (5–100%)
 - **Falloff rate** (0.5x–3.0x)
@@ -60,45 +60,45 @@ Generate multi-layer shadow stacks that simulate smooth gradient falloff:
 - Base **color** control
 - Each layer is progressively more blurred and transparent for a natural glow
 
-### 📏 Depth Meter
+### Depth Meter
 A distance-from-surface slider (0–100%) that auto-generates 3–5 shadow layers:
 - **Flat -> Raised -> Lifted -> Floating -> Hovering -> Levitated**
 - Color picker for the shadow color
 - Live mini-preview
 - One-click **Apply Depth** to load the generated layers into the editor
 
-### 🎨 Shadow Palette
+### Shadow Palette
 Generate 6 harmonized variations from the currently selected layer:
 
 | Variation | Style |
 |-----------|-------|
-| 🕊️ Subtle | Soft and gentle |
-| 💪 Bold | Strong and deep |
-| ☁️ Ethereal | Wide and floating |
-| ⚡ Sharp | Tight and precise |
-| 🌅 Warm | Amber-toned glow |
-| ❄️ Cool | Blue-toned depth |
+| Subtle | Soft and gentle |
+| Bold | Strong and deep |
+| Ethereal | Wide and floating |
+| Sharp | Tight and precise |
+| Warm | Amber-toned glow |
+| Cool | Blue-toned depth |
 
-### 🔍 Focus Ring Generator
+### Focus Ring Generator
 Generate WCAG-accessible `:focus-visible` rings based on the active layer's color:
 - Two-layer ring (contrast + accent)
 - Copy the CSS directly
 - Live preview toggle
 
-### 🧬 Shadow DNA
+### Shadow DNA
 Encode/decode your entire shadow configuration as a compact, URL-safe string:
 - **Export DNA** - copy the compact string
 - **Import DNA** - paste a string to restore a configuration
 - Perfect for sharing designs in a single line
 
-### ↩️ Undo / Redo
+### Undo / Redo
 Full history with keyboard shortcuts:
 - `Ctrl/Cmd + Z` - Undo
 - `Ctrl/Cmd + Shift + Z` - Redo
 - `Ctrl/Cmd + Y` - Redo
 - History depth: 30 states
 
-### 📊 Smart Shadow Inspector
+### Smart Shadow Inspector
 Real-time statistics for the current shadow configuration:
 - **Layer count** (with hidden indicator)
 - **CSS string length** (in characters)
@@ -108,49 +108,49 @@ Real-time statistics for the current shadow configuration:
 - **Depth score** (0–100 with color-coded bar)
 - **Tone classification** (light / dark)
 
-### 🔄 Hover / Focus / Active State Preview
+### Hover / Focus / Active State Preview
 Simulate CSS interaction states directly on the preview canvas:
 - **Normal -> Hover -> Focus -> Active**
 - See the shadow and scale transform applied in real time
 - CSS transition output shown below the canvas for the active state
 
-### 📐 Element Size & Rotation
+### Element Size & Rotation
 - **Preset sizes**: S (80px), M (128px), L (200px), XL (300px)
 - **Custom size slider**: 40–400px
 - **Rotation**: 0°, 45°, 90°, 180° applied to the preview element
 
-### ☀🌙 Quick Theme Comparison (Split View)
+### Quick Theme Comparison (Split View)
 Toggle split-view to see the same shadow rendered simultaneously on **dark** and **light** backgrounds - side by side.
 
-### 🖱 Figma-Style Draggable Canvas
+### Figma-Style Draggable Canvas
 - **Pan** the canvas by dragging (mouse or touch)
 - **Double-click** to reset the view
 - Bounded mode keeps the element visible; **unbounded mode** (when panels are hidden) allows free roaming
 
-### 🔲 Panel Toggle
+### Panel Toggle
 Hide or show all panels with one click for a **full-canvas, distraction-free preview**.
 
-### 💡 Light Source Overlay
+### Light Source Overlay
 - Toggle a draggable light orb on the canvas
 - Drag the orb to control shadow direction in real time
 - Angle readout displayed on the orb
 - Light rays visualized from source to center
 
-### 🧩 Material System
+### Material System
 Simulate how different surfaces affect shadow appearance:
 
 | Material | Icon | Effect |
 |----------|------|--------|
-| Paper | 📄 | Matte surface, natural absorption |
-| Glass | 🪟 | Transparent, light passes through |
-| Metal | ⚙️ | Reflective, high-contrast shadows |
-| Frosted | 🧊 | Diffused, soft light transmission |
-| Fabric | 🧵 | Textured, soft shadow edges |
-| Plastic | 🧩 | Smooth, slightly glossy |
+| Paper | - | Matte surface, natural absorption |
+| Glass | - | Transparent, light passes through |
+| Metal | - | Reflective, high-contrast shadows |
+| Frosted | - | Diffused, soft light transmission |
+| Fabric | - | Textured, soft shadow edges |
+| Plastic | - | Smooth, slightly glossy |
 
 Each material modifies the shadow's lightness and opacity to match the surface.
 
-### 📦 Preview Shapes
+### Preview Shapes
 | Shape | Description |
 |-------|-------------|
 | Box | Square with rounded corners |
@@ -158,22 +158,22 @@ Each material modifies the shadow's lightness and opacity to match the surface.
 | Button | Pill-shaped with label |
 | Card | Content card mockup |
 
-### 🎨 Background Presets
+### Background Presets
 9 preset backgrounds: **Light, White, Dark, Black, Warm Gray, Cool Gray** (solids) + **Sunset, Ocean, Forest** (gradients).
 
-### 🌗 Dark / Light Theme
+### Dark / Light Theme
 - Toggle between themes with persistent `localStorage` preference
 - Inline script prevents theme flash on page load
 
-### 🗂 Presets Gallery (40+ Curated Shadows)
+### Presets Gallery (40+ Curated Shadows)
 Browse and load presets organized by category with visual mini-previews:
 
 **Subtle** · **Elevated** · **Material** · **Apple** · **Soft UI** · **Glassmorphism** · **Neumorphism** · **Dashboard** · **Colored** · **Inset**
 
-### 📐 Shadow Scale Page
+### Shadow Scale Page
 A dedicated page that visualizes all your shadow layers side-by-side with elevation labels - ideal for designing consistent shadow systems.
 
-### 📋 Multiple Export Formats
+### Multiple Export Formats
 
 | Format | Description |
 |--------|-------------|
@@ -187,7 +187,7 @@ A dedicated page that visualizes all your shadow layers side-by-side with elevat
 
 All code output is **syntax-highlighted** with a custom tokenizer supporting CSS, JavaScript/TypeScript, Dart/Flutter, JSON, and SCSS.
 
-### 🔗 URL-Based Sharing
+### URL-Based Sharing
 Shadow state is automatically encoded into the URL query parameter `?s=...`. Copy the URL to share your exact configuration - no backend required.
 
 ---
@@ -436,4 +436,4 @@ Distributed under the **MIT License**. See [LICENSE](LICENSE) for more informati
 
 ---
 
-<p align="center">Built with ❄️ using Next.js 16, React 19, and Tailwind CSS v4</p>
+<p align="center">Built with Next.js 16, React 19, and Tailwind CSS v4</p>
