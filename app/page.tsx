@@ -18,6 +18,7 @@ import { ShadowLayerList } from "../components/controls/ShadowLayerList";
 import { DepthMeter } from "../components/controls/DepthMeter";
 import { GradientShadow } from "../components/controls/GradientShadow";
 import { ShadowDNA } from "../components/code/ShadowDNA";
+import { FocusRingGenerator } from "../components/controls/FocusRingGenerator";
 import { ShadowPalette } from "../components/controls/ShadowPalette";
 import { ShadowMorph } from "../components/controls/ShadowMorph";
 import { NaturalLanguageInput } from "../components/controls/NaturalLanguageInput";
@@ -369,6 +370,7 @@ export default function Home() {
                   <DepthMeter onApply={loadPreset} />
                   <GradientShadow onApply={loadPreset} />
                   <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
+                  <FocusRingGenerator activeShadow={activeShadow ?? null} />
                   {activeShadow && (
                     <ShadowPalette
                       seed={activeShadow}
