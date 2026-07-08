@@ -28,7 +28,7 @@ const SHAPES: { label: string; value: PreviewShape }[] = [
   { label: "Card", value: "card" },
 ];
 
-const PAN_BOUNDS = 320;
+const PAN_BOUNDS = 600;
 
 export function ShadowPreview({
   shadows,
@@ -43,6 +43,7 @@ export function ShadowPreview({
   const panState = useRef({ x: 0, y: 0 });
   const isPanning = useRef(false);
   const panStart = useRef({ clientX: 0, clientY: 0, originX: 0, originY: 0 });
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const handlePanStart = useCallback((e: React.PointerEvent) => {
     isPanning.current = true;
@@ -54,6 +55,10 @@ export function ShadowPreview({
       originX: panState.current.x,
       originY: panState.current.y,
     };
+    // Direct DOM — avoid React re-render lag during drag
+    if (contentRef.current) {
+      contentRef.current.style.transition = "none";
+    }
   }, []);
 
   const handlePanMove = useCallback((e: React.PointerEvent) => {
@@ -69,7 +74,10 @@ export function ShadowPreview({
       Math.min(PAN_BOUNDS, panStart.current.originY + dy),
     );
     panState.current = { x: newX, y: newY };
-    setPan({ x: newX, y: newY });
+    // Direct DOM — skip React reconciliation for 60fps
+    if (contentRef.current) {
+      contentRef.current.style.transform = `translate(${newX}px, ${newY}px)`;
+    }
   }, []);
 
   const handlePanEnd = useCallback((e: React.PointerEvent) => {
@@ -78,11 +86,28 @@ export function ShadowPreview({
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {}
+    // Restore transition (for double-click animation)
+    if (contentRef.current) {
+      contentRef.current.style.transition = "";
+    }
+    // Sync React state for non-drag interactions
+    setPan({ x: panState.current.x, y: panState.current.y });
   }, []);
 
   const handleDoubleClick = useCallback(() => {
-    setPan({ x: 0, y: 0 });
     panState.current = { x: 0, y: 0 };
+    setPan({ x: 0, y: 0 });
+    // Animate back to center smoothly
+    if (contentRef.current) {
+      contentRef.current.style.transition =
+        "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)";
+      contentRef.current.style.transform = "translate(0px, 0px)";
+      setTimeout(() => {
+        if (contentRef.current) {
+          contentRef.current.style.transition = "";
+        }
+      }, 350);
+    }
   }, []);
 
   const material = getMaterial(materialId);
@@ -230,6 +255,7 @@ export function ShadowPreview({
       >
         {/* Panned content */}
         <div
+          ref={contentRef}
           className="absolute inset-0 flex items-center justify-center"
           style={{
             transform: `translate(${pan.x}px, ${pan.y}px)`,

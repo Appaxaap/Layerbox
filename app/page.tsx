@@ -1,6 +1,13 @@
 "use client";
 
-import { Layers, Lightbulb, Moon, Sun } from "lucide-react";
+import {
+  Layers,
+  Lightbulb,
+  Moon,
+  Sun,
+  PanelLeftClose,
+  PanelLeft,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { CodeOutput } from "../components/code/CodeOutput";
 import { PresetsGallery } from "../components/controls/PresetsGallery";
@@ -38,6 +45,7 @@ export default function Home() {
   // Read initial state from DOM (already set by inline script in layout.tsx)
   const [isLight, setIsLight] = useState(false);
   const [tab, setTab] = useState<"editor" | "presets" | "scale">("editor");
+  const [showPanels, setShowPanels] = useState(true);
 
   useEffect(() => {
     setIsLight(document.documentElement.classList.contains("light"));
@@ -137,6 +145,27 @@ export default function Home() {
             <Lightbulb size={14} />
           </button>
 
+          {/* Toggle panels (Figma-style) */}
+          <button
+            onClick={() => setShowPanels((v) => !v)}
+            className="w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-150 active:scale-90"
+            style={{
+              background: showPanels
+                ? "rgba(128,128,128,0.08)"
+                : "color-mix(in srgb, var(--accent) 12%, transparent)",
+              border: `1px solid ${showPanels ? "var(--border)" : "color-mix(in srgb, var(--accent) 25%, transparent)"}`,
+              color: showPanels ? "var(--text-muted)" : "var(--accent)",
+            }}
+            aria-label={showPanels ? "Hide all panels" : "Show all panels"}
+            title="Toggle all panels"
+          >
+            {showPanels ? (
+              <PanelLeftClose size={14} />
+            ) : (
+              <PanelLeft size={14} />
+            )}
+          </button>
+
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
@@ -169,110 +198,119 @@ export default function Home() {
             </div>
 
             {/* ─── Layout 1: Layers + Controls (left) ─── */}
-            <div className="absolute left-3 top-3 bottom-3 w-[270px] flex flex-col gap-2 z-10 pointer-events-none">
-              {/* Layers panel */}
+            {showPanels && (
+              <div className="absolute left-3 top-3 bottom-3 w-[270px] flex flex-col gap-2 z-10 pointer-events-none">
+                {/* Layers panel */}
+                <div
+                  className="shrink-0 pointer-events-auto animate-fade-up rounded-2xl p-3"
+                  style={{
+                    background: "var(--surface)",
+                    border: "1px solid var(--border)",
+                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                  }}
+                >
+                  <ShadowLayerList
+                    shadows={shadows}
+                    activeId={activeId}
+                    onSelect={setActiveId}
+                    onAdd={addLayer}
+                    onRemove={removeLayer}
+                    onDuplicate={duplicateLayer}
+                    onToggleVisibility={toggleLayerVisibility}
+                    onReorder={reorderLayers}
+                  />
+                </div>
+
+                {/* Controls panel */}
+                {activeShadow && (
+                  <div
+                    className="flex-1 min-h-[180px] pointer-events-auto animate-fade-up stagger-1"
+                    style={{
+                      filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                    }}
+                  >
+                    <div
+                      className="h-full rounded-2xl p-3 pb-2 flex flex-col gap-1 overflow-y-auto"
+                      style={{
+                        background: "var(--surface)",
+                        border: "1px solid var(--border)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-1 px-1 shrink-0">
+                        <span
+                          className="text-[10px] font-semibold uppercase tracking-wider"
+                          style={{ color: "var(--text-faint)" }}
+                        >
+                          Layer Controls
+                        </span>
+                        <span
+                          className="text-[10px] font-mono"
+                          style={{ color: "var(--text-faint)" }}
+                        >
+                          Layer{" "}
+                          {displayShadows.findIndex((s) => s.id === activeId) +
+                            1}
+                        </span>
+                      </div>
+                      <ShadowLayerControls
+                        key={activeShadow.id}
+                        shadow={activeShadow}
+                        onChange={(patch) =>
+                          updateLayer(activeShadow.id, patch)
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ─── Panel C: Properties / Tools (right) ─── */}
+            {showPanels && (
               <div
-                className="shrink-0 pointer-events-auto animate-fade-up rounded-2xl p-3"
+                className="absolute right-3 top-3 bottom-3 w-[270px] z-10 animate-fade-up pointer-events-auto rounded-2xl overflow-hidden"
                 style={{
                   background: "var(--surface)",
                   border: "1px solid var(--border)",
                   filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
                 }}
               >
-                <ShadowLayerList
-                  shadows={shadows}
-                  activeId={activeId}
-                  onSelect={setActiveId}
-                  onAdd={addLayer}
-                  onRemove={removeLayer}
-                  onDuplicate={duplicateLayer}
-                  onToggleVisibility={toggleLayerVisibility}
-                  onReorder={reorderLayers}
-                />
-              </div>
-
-              {/* Controls panel */}
-              {activeShadow && (
                 <div
-                  className="flex-1 min-h-[180px] pointer-events-auto animate-fade-up stagger-1"
+                  className="flex flex-col gap-2 p-3 h-full overflow-y-auto"
                   style={{
-                    filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "rgba(255,255,255,0.08) transparent",
                   }}
                 >
-                  <div
-                    className="h-full rounded-2xl p-3 pb-2 flex flex-col gap-1 overflow-y-auto"
-                    style={{
-                      background: "var(--surface)",
-                      border: "1px solid var(--border)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-1 px-1 shrink-0">
-                      <span
-                        className="text-[10px] font-semibold uppercase tracking-wider"
-                        style={{ color: "var(--text-faint)" }}
-                      >
-                        Layer Controls
-                      </span>
-                      <span
-                        className="text-[10px] font-mono"
-                        style={{ color: "var(--text-faint)" }}
-                      >
-                        Layer{" "}
-                        {displayShadows.findIndex((s) => s.id === activeId) + 1}
-                      </span>
-                    </div>
-                    <ShadowLayerControls
-                      key={activeShadow.id}
-                      shadow={activeShadow}
-                      onChange={(patch) => updateLayer(activeShadow.id, patch)}
+                  <NaturalLanguageInput onApply={loadPreset} />
+                  <DepthMeter onApply={loadPreset} />
+                  <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
+                  {activeShadow && (
+                    <ShadowPalette
+                      seed={activeShadow}
+                      onSelect={(s) => {
+                        updateLayer(activeShadow.id, s);
+                      }}
                     />
-                  </div>
+                  )}
+                  <div className="flex-1" />
                 </div>
-              )}
-            </div>
-
-            {/* ─── Panel C: Properties / Tools (right) ─── */}
-            <div
-              className="absolute right-3 top-3 bottom-3 w-[270px] z-10 animate-fade-up pointer-events-auto rounded-2xl overflow-hidden"
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-              }}
-            >
-              <div
-                className="flex flex-col gap-2 p-3 h-full overflow-y-auto"
-                style={{
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "rgba(255,255,255,0.08) transparent",
-                }}
-              >
-                <NaturalLanguageInput onApply={loadPreset} />
-                <DepthMeter onApply={loadPreset} />
-                <ShadowDNA shadows={shadows} onLoadDNA={loadPreset} />
-                {activeShadow && (
-                  <ShadowPalette
-                    seed={activeShadow}
-                    onSelect={(s) => {
-                      updateLayer(activeShadow.id, s);
-                    }}
-                  />
-                )}
-                <div className="flex-1" />
               </div>
-            </div>
+            )}
 
             {/* ─── Panel D: Code output (bottom, between left & right panels) ─── */}
-            <div
-              className="absolute bottom-3 left-[300px] right-[300px] h-[360px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
-              style={{
-                background: "var(--surface-code)",
-                border: "1px solid var(--border)",
-                filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
-              }}
-            >
-              <CodeOutput shadows={displayShadows} />
-            </div>
+            {showPanels && (
+              <div
+                className="absolute bottom-3 left-[300px] right-[300px] h-[360px] z-10 animate-fade-up rounded-2xl overflow-hidden pointer-events-auto"
+                style={{
+                  background: "var(--surface-code)",
+                  border: "1px solid var(--border)",
+                  filter: "drop-shadow(0 8px 32px rgba(0,0,0,0.35))",
+                }}
+              >
+                <CodeOutput shadows={displayShadows} />
+              </div>
+            )}
           </div>
         )}
 
